@@ -1,0 +1,55 @@
+name: Update Cask
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 6 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  update-cask:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get latest TimeMachineTrimmer release
+        id: release
+        run: |
+          RELEASE=$(gh release view --repo ricardoleal/TimeMachineTrimmer --json tagName --jq '.tagName')
+          VERSION="${RELEASE#v}"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=$RELEASE" >> "$GITHUB_OUTPUT"
+
+          gh release download "$RELEASE" --repo ricardoleal/TimeMachineTrimmer -p "*.dmg" -O /tmp/app.dmg
+          SHA256=$(shasum -a 256 /tmp/app.dmg | cut -d' ' -f1)
+          echo "sha256=$SHA256" >> "$GITHUB_OUTPUT"
+
+      - name: Check if update needed
+        id: check
+        run: |
+          CURRENT=$(grep 'version "' Casks/time-machine-trimmer.rb | sed 's/.*"\(.*\)".*/\1/')
+          LATEST="${{ steps.release.outputs.version }}"
+          echo "Current: $CURRENT  Latest: $LATEST"
+          if [ "$CURRENT" = "$LATEST" ]; then
+            echo "updated=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "updated=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Update cask
+        if: steps.check.outputs.updated == 'true'
+        run: |
+          sed -i '' 's/version ".*"/version "${{ steps.release.outputs.version }}"/' Casks/time-machine-trimmer.rb
+          sed -i '' 's/sha256 ".*"/sha256 "${{ steps.release.outputs.sha256 }}"/' Casks/time-machine-trimmer.rb
+          cat Casks/time-machine-trimmer.rb
+
+      - name: Commit and push
+        if: steps.check.outputs.updated == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Casks/time-machine-trimmer.rb
+          git commit -m "Update to v${{ steps.release.outputs.version }}"
+          git push
