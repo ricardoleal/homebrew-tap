@@ -16,6 +16,8 @@ jobs:
 
       - name: Get latest TimeMachineTrimmer release
         id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           RELEASE=$(gh release view --repo ricardoleal/TimeMachineTrimmer --json tagName --jq '.tagName')
           VERSION="${RELEASE#v}"
