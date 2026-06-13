@@ -39,13 +39,15 @@ jobs:
       - name: Check if update needed
         id: check
         run: |
-          CURRENT=$(grep 'version "' Casks/time-machine-trimmer-dev.rb | sed 's/.*"\(.*\)".*/\1/')
-          LATEST="${{ steps.release.outputs.version }}"
-          echo "Current: $CURRENT  Latest: $LATEST"
-          if [ "$CURRENT" = "$LATEST" ]; then
-            echo "updated=false" >> "$GITHUB_OUTPUT"
-          else
+          CURRENT_VER=$(grep 'version "' Casks/time-machine-trimmer-dev.rb | sed 's/.*"\(.*\)".*/\1/')
+          CURRENT_SHA=$(grep 'sha256 "' Casks/time-machine-trimmer-dev.rb | sed 's/.*"\(.*\)".*/\1/')
+          LATEST_VER="${{ steps.release.outputs.version }}"
+          LATEST_SHA="${{ steps.release.outputs.sha256 }}"
+          echo "Current: $CURRENT_VER / $CURRENT_SHA  Latest: $LATEST_VER / $LATEST_SHA"
+          if [ "$CURRENT_VER" != "$LATEST_VER" ] || [ "$CURRENT_SHA" != "$LATEST_SHA" ]; then
             echo "updated=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "updated=false" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Update cask
