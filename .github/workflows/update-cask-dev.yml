@@ -1,0 +1,65 @@
+name: Update Dev Cask
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "30 6 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  update-cask-dev:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get latest dev release
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG=$(gh release list \
+            --repo ricardoleal/TimeMachineTrimmer \
+            --exclude-drafts \
+            --json tagName \
+            --jq '[.[].tagName | select(contains("-dev"))] | last')
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          VERSION="${TAG#v}"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+          gh release download "$TAG" --repo ricardoleal/TimeMachineTrimmer -p "*.dmg" -O /tmp/app.dmg || true
+          if [ -f /tmp/app.dmg ]; then
+            SHA256=$(shasum -a 256 /tmp/app.dmg | cut -d' ' -f1)
+            echo "sha256=$SHA256" >> "$GITHUB_OUTPUT"
+          else
+            echo "sha256=0000000000000000000000000000000000000000000000000000000000000000" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Check if update needed
+        id: check
+        run: |
+          CURRENT=$(grep 'version "' Casks/time-machine-trimmer-dev.rb | sed 's/.*"\(.*\)".*/\1/')
+          LATEST="${{ steps.release.outputs.version }}"
+          echo "Current: $CURRENT  Latest: $LATEST"
+          if [ "$CURRENT" = "$LATEST" ]; then
+            echo "updated=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "updated=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Update cask
+        if: steps.check.outputs.updated == 'true'
+        run: |
+          sed -i '' 's/version ".*"/version "${{ steps.release.outputs.version }}"/' Casks/time-machine-trimmer-dev.rb
+          sed -i '' 's/sha256 ".*"/sha256 "${{ steps.release.outputs.sha256 }}"/' Casks/time-machine-trimmer-dev.rb
+          cat Casks/time-machine-trimmer-dev.rb
+
+      - name: Commit and push
+        if: steps.check.outputs.updated == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Casks/time-machine-trimmer-dev.rb
+          git commit -m "Update dev cask to v${{ steps.release.outputs.version }}"
+          git push

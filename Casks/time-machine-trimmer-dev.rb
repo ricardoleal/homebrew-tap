@@ -1,17 +1,19 @@
-cask "time-machine-trimmer" do
-  version "1.0.3"
-  sha256 "44b1459f1c5ac03ddd1e966209560aa566681cfc75dfabecf1a5544010403e10"
+cask "time-machine-trimmer-dev" do
+  version "1.0.1-dev.1"
+  sha256 "0000000000000000000000000000000000000000000000000000000000000000"
 
   url "https://github.com/ricardoleal/TimeMachineTrimmer/releases/download/v#{version}/TimeMachineTrimmer.dmg"
-  name "TimeMachineTrimmer"
-  desc "Trim old Time Machine backups, reclaim disk space"
+  name "TimeMachineTrimmer Dev"
+  desc "Trim old Time Machine backups, reclaim disk space (dev build)"
   homepage "https://github.com/ricardoleal/TimeMachineTrimmer"
 
-  conflicts_with cask: "time-machine-trimmer-dev"
+  conflicts_with cask: "time-machine-trimmer"
 
   app "TimeMachineTrimmer.app"
 
   caveats <<~EOS
+    This is a development prerelease build.
+
     This app requires Full Disk Access.
     To grant it: System Settings → Privacy & Security → Full Disk Access → add TimeMachineTrimmer.
 
