@@ -36,32 +36,17 @@ jobs:
             echo "sha256=0000000000000000000000000000000000000000000000000000000000000000" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Check if update needed
-        id: check
-        run: |
-          CURRENT_VER=$(grep 'version "' Casks/time-machine-trimmer-dev.rb | sed 's/.*"\(.*\)".*/\1/')
-          CURRENT_SHA=$(grep 'sha256 "' Casks/time-machine-trimmer-dev.rb | sed 's/.*"\(.*\)".*/\1/')
-          LATEST_VER="${{ steps.release.outputs.version }}"
-          LATEST_SHA="${{ steps.release.outputs.sha256 }}"
-          echo "Current: $CURRENT_VER / $CURRENT_SHA  Latest: $LATEST_VER / $LATEST_SHA"
-          if [ "$CURRENT_VER" != "$LATEST_VER" ] || [ "$CURRENT_SHA" != "$LATEST_SHA" ]; then
-            echo "updated=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "updated=false" >> "$GITHUB_OUTPUT"
-          fi
-
       - name: Update cask
-        if: steps.check.outputs.updated == 'true'
         run: |
           sed -i '' 's/version ".*"/version "${{ steps.release.outputs.version }}"/' Casks/time-machine-trimmer-dev.rb
           sed -i '' 's/sha256 ".*"/sha256 "${{ steps.release.outputs.sha256 }}"/' Casks/time-machine-trimmer-dev.rb
           cat Casks/time-machine-trimmer-dev.rb
 
       - name: Commit and push
-        if: steps.check.outputs.updated == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add Casks/time-machine-trimmer-dev.rb
-          git commit -m "Update dev cask to v${{ steps.release.outputs.version }}"
+          LATEST="${{ steps.release.outputs.version }}"
+          git commit -m "Update dev cask to v$LATEST" || echo "No changes to commit"
           git push
