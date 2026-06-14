@@ -19,8 +19,8 @@ cask "time-machine-trimmer" do
     If macOS blocks it, open it via: System Settings → Privacy & Security → scroll to "Allow apps from…"
     Or right-click the app and select Open.
 
-    macOS 27 is not yet supported. If you encounter issues, check for updates
-    at https://github.com/ricardoleal/TimeMachineTrimmer.
+    macOS 27 is not yet supported. See discussion:
+    https://github.com/ricardoleal/TimeMachineTrimmer/discussions/21
   EOS
 
   zap trash: [
