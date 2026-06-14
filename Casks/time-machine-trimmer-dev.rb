@@ -20,6 +20,9 @@ cask "time-machine-trimmer-dev" do
     The app is not signed with a Developer ID certificate.
     If macOS blocks it, open it via: System Settings → Privacy & Security → scroll to "Allow apps from…"
     Or right-click the app and select Open.
+
+    macOS 27 is not yet supported. If you encounter issues, check for updates
+    at https://github.com/ricardoleal/TimeMachineTrimmer.
   EOS
 
   zap trash: [
