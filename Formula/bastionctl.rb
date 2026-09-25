@@ -1,7 +1,7 @@
 class Bastionctl < Formula
   desc "Find, test, and remember the best EC2 instance to use as an sshuttle pivot into an AWS VPC"
   homepage "https://github.com/ricardoleal/bastionctl"
-  version "0.1.0"
+  version "0.1.1"
   license "MIT"
 
   depends_on "sshuttle"
@@ -9,7 +9,7 @@ class Bastionctl < Formula
   on_macos do
     on_arm do
       url "https://github.com/ricardoleal/bastionctl/releases/download/v0.1.0/bastionctl-darwin-arm64"
-      sha256 "83c76d40e43db80649380b7bd27a5fc39386f73e0dbe85f4b8cd7685c8a5d141"
+      sha256 "9197c3a1ea0d1740adbee13a137cca975592471ce7e8efe7820a30e4e293bdd7"
 
       def install
         bin.install "bastionctl-darwin-arm64" => "bastionctl"
@@ -17,7 +17,7 @@ class Bastionctl < Formula
     end
     on_intel do
       url "https://github.com/ricardoleal/bastionctl/releases/download/v0.1.0/bastionctl-darwin-amd64"
-      sha256 "29e668fe6b386a511cbc781698b72771212f9325379645fe2f1746ff00facb4a"
+      sha256 "6e4c9267b0de0e6131841f76d97782f5eb79832fa921f9a45405c3633f56893f"
 
       def install
         bin.install "bastionctl-darwin-amd64" => "bastionctl"
@@ -28,7 +28,7 @@ class Bastionctl < Formula
   on_linux do
     on_arm do
       url "https://github.com/ricardoleal/bastionctl/releases/download/v0.1.0/bastionctl-linux-arm64"
-      sha256 "75ef224b264787714f27d8382cfd0d32c0447e7876f64a71d9e66c591297faa3"
+      sha256 "f5b4ac9408dcab65c5893c49180d42faf5451ea216b040e76e56a9839ffee83c"
 
       def install
         bin.install "bastionctl-linux-arm64" => "bastionctl"
@@ -36,7 +36,7 @@ class Bastionctl < Formula
     end
     on_intel do
       url "https://github.com/ricardoleal/bastionctl/releases/download/v0.1.0/bastionctl-linux-amd64"
-      sha256 "4d070ed6cffb21592db26100ad3074288a090f5f5ef5ad50e951267cd6a8eb57"
+      sha256 "94cafc86946c366d9e070bff48c3bab8fbb95347508bee306a29a7dbd55c9496"
 
       def install
         bin.install "bastionctl-linux-amd64" => "bastionctl"
