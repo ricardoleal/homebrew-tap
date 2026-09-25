@@ -8,7 +8,7 @@ class Bastionctl < Formula
 
   on_macos do
     on_arm do
-      url "https://github.com/ricardoleal/bastionctl/releases/download/v0.1.0/bastionctl-darwin-arm64"
+      url "https://github.com/ricardoleal/bastionctl/releases/download/v0.1.1/bastionctl-darwin-arm64"
       sha256 "9197c3a1ea0d1740adbee13a137cca975592471ce7e8efe7820a30e4e293bdd7"
 
       def install
@@ -16,7 +16,7 @@ class Bastionctl < Formula
       end
     end
     on_intel do
-      url "https://github.com/ricardoleal/bastionctl/releases/download/v0.1.0/bastionctl-darwin-amd64"
+      url "https://github.com/ricardoleal/bastionctl/releases/download/v0.1.1/bastionctl-darwin-amd64"
       sha256 "6e4c9267b0de0e6131841f76d97782f5eb79832fa921f9a45405c3633f56893f"
 
       def install
@@ -27,7 +27,7 @@ class Bastionctl < Formula
 
   on_linux do
     on_arm do
-      url "https://github.com/ricardoleal/bastionctl/releases/download/v0.1.0/bastionctl-linux-arm64"
+      url "https://github.com/ricardoleal/bastionctl/releases/download/v0.1.1/bastionctl-linux-arm64"
       sha256 "f5b4ac9408dcab65c5893c49180d42faf5451ea216b040e76e56a9839ffee83c"
 
       def install
@@ -35,7 +35,7 @@ class Bastionctl < Formula
       end
     end
     on_intel do
-      url "https://github.com/ricardoleal/bastionctl/releases/download/v0.1.0/bastionctl-linux-amd64"
+      url "https://github.com/ricardoleal/bastionctl/releases/download/v0.1.1/bastionctl-linux-amd64"
       sha256 "94cafc86946c366d9e070bff48c3bab8fbb95347508bee306a29a7dbd55c9496"
 
       def install

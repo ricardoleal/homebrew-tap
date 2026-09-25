@@ -27,10 +27,10 @@ jobs:
           gh release download "$RELEASE" --repo ricardoleal/bastionctl -p "checksums.txt" -O /tmp/checksums.txt
           cat /tmp/checksums.txt
 
-          DARWIN_AMD64=$(awk '/bastionctl-darwin-amd64/ {print $1}' /tmp/checksums.txt)
-          DARWIN_ARM64=$(awk '/bastionctl-darwin-arm64/ {print $1}' /tmp/checksums.txt)
-          LINUX_AMD64=$(awk '/bastionctl-linux-amd64/ {print $1}' /tmp/checksums.txt)
-          LINUX_ARM64=$(awk '/bastionctl-linux-arm64/ {print $1}' /tmp/checksums.txt)
+          DARWIN_AMD64=$(awk '$2 ~ /(^|\/)bastionctl-darwin-amd64$/ {print $1}' /tmp/checksums.txt)
+          DARWIN_ARM64=$(awk '$2 ~ /(^|\/)bastionctl-darwin-arm64$/ {print $1}' /tmp/checksums.txt)
+          LINUX_AMD64=$(awk '$2 ~ /(^|\/)bastionctl-linux-amd64$/ {print $1}' /tmp/checksums.txt)
+          LINUX_ARM64=$(awk '$2 ~ /(^|\/)bastionctl-linux-arm64$/ {print $1}' /tmp/checksums.txt)
 
           echo "darwin_amd64=$DARWIN_AMD64" >> "$GITHUB_OUTPUT"
           echo "darwin_arm64=$DARWIN_ARM64" >> "$GITHUB_OUTPUT"
@@ -42,8 +42,16 @@ jobs:
         run: |
           CURRENT=$(grep 'version "' Formula/bastionctl.rb | head -1 | sed 's/.*"\(.*\)".*/\1/')
           LATEST="${{ steps.release.outputs.version }}"
-          echo "Current: $CURRENT  Latest: $LATEST"
-          if [ "$CURRENT" = "$LATEST" ]; then
+          TAG="${{ steps.release.outputs.tag }}"
+          echo "Current: $CURRENT  Latest: $LATEST  Tag: $TAG"
+          # Trigger on version drift OR url/sha drift, so a past partial
+          # bump (e.g. v0.1.1 hashes without URL bump) self-heals.
+          if [ "$CURRENT" = "$LATEST" ] \
+            && grep -q "releases/download/$TAG/" Formula/bastionctl.rb \
+            && grep -q "${{ steps.release.outputs.darwin_arm64 }}" Formula/bastionctl.rb \
+            && grep -q "${{ steps.release.outputs.darwin_amd64 }}" Formula/bastionctl.rb \
+            && grep -q "${{ steps.release.outputs.linux_arm64 }}" Formula/bastionctl.rb \
+            && grep -q "${{ steps.release.outputs.linux_amd64 }}" Formula/bastionctl.rb; then
             echo "updated=false" >> "$GITHUB_OUTPUT"
           else
             echo "updated=true" >> "$GITHUB_OUTPUT"
@@ -53,7 +61,11 @@ jobs:
         if: steps.check.outputs.updated == 'true'
         run: |
           VERSION="${{ steps.release.outputs.version }}"
+          TAG="${{ steps.release.outputs.tag }}"
           sed -i '' "s/version \".*\"/version \"$VERSION\"/" Formula/bastionctl.rb
+          # Keep download URLs in sync with the release tag (this was the v0.1.1 bug:
+          # version+sha were bumped but URLs still pointed at v0.1.0 binaries).
+          sed -i '' "s|releases/download/v[^/]*|releases/download/$TAG|g" Formula/bastionctl.rb
           # Replace each sha256 in order: darwin-arm64, darwin-amd64, linux-arm64, linux-amd64
           # (match by surrounding url context instead: simpler to replace all four sequentially)
           perl -0pi -e 's/bastionctl-darwin-arm64"\n\s+sha256 "[a-f0-9]+"/bastionctl-darwin-arm64"\n      sha256 "${{ steps.release.outputs.darwin_arm64 }}"/' Formula/bastionctl.rb
