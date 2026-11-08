@@ -1,47 +1,36 @@
 class Bastionctl < Formula
-  desc "Find, test, and remember the best EC2 instance to use as an sshuttle pivot into an AWS VPC"
+  desc "Find the best EC2 instance to use as an sshuttle pivot into an AWS VPC"
   homepage "https://github.com/ricardoleal/bastionctl"
-  version "0.1.1"
   license "MIT"
 
   depends_on "sshuttle"
 
   on_macos do
     on_arm do
-      url "https://github.com/ricardoleal/bastionctl/releases/download/v0.1.1/bastionctl-darwin-arm64"
-      sha256 "9197c3a1ea0d1740adbee13a137cca975592471ce7e8efe7820a30e4e293bdd7"
-
-      def install
-        bin.install "bastionctl-darwin-arm64" => "bastionctl"
-      end
+      url "https://github.com/ricardoleal/bastionctl/releases/download/v0.2.0/bastionctl-darwin-arm64"
+      sha256 "e69cd45678c3b0dbb0d712155fa837354c1e41ec3cbb80e5c976d4f242a8d2ad"
     end
     on_intel do
-      url "https://github.com/ricardoleal/bastionctl/releases/download/v0.1.1/bastionctl-darwin-amd64"
-      sha256 "6e4c9267b0de0e6131841f76d97782f5eb79832fa921f9a45405c3633f56893f"
-
-      def install
-        bin.install "bastionctl-darwin-amd64" => "bastionctl"
-      end
+      url "https://github.com/ricardoleal/bastionctl/releases/download/v0.2.0/bastionctl-darwin-amd64"
+      sha256 "f94a29ef4e61e719ccfc1b11bd6f6ffe687b41141302a41ad86a0b7a79599167"
     end
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/ricardoleal/bastionctl/releases/download/v0.1.1/bastionctl-linux-arm64"
-      sha256 "f5b4ac9408dcab65c5893c49180d42faf5451ea216b040e76e56a9839ffee83c"
-
-      def install
-        bin.install "bastionctl-linux-arm64" => "bastionctl"
-      end
+      url "https://github.com/ricardoleal/bastionctl/releases/download/v0.2.0/bastionctl-linux-arm64"
+      sha256 "5ce37999363b2185514f211db4e62432334791d41531e5beb490b591e94ab555"
     end
     on_intel do
-      url "https://github.com/ricardoleal/bastionctl/releases/download/v0.1.1/bastionctl-linux-amd64"
-      sha256 "94cafc86946c366d9e070bff48c3bab8fbb95347508bee306a29a7dbd55c9496"
-
-      def install
-        bin.install "bastionctl-linux-amd64" => "bastionctl"
-      end
+      url "https://github.com/ricardoleal/bastionctl/releases/download/v0.2.0/bastionctl-linux-amd64"
+      sha256 "21ea63fbe3b2144eb24f9214c4b0030f4083a485a52aca3017adcd920dd25894"
     end
+  end
+
+  def install
+    os = OS.mac? ? "darwin" : "linux"
+    arch = Hardware::CPU.intel? ? "amd64" : "arm64"
+    bin.install "bastionctl-#{os}-#{arch}" => "bastionctl"
   end
 
   def caveats
@@ -57,7 +46,7 @@ class Bastionctl < Formula
   end
 
   test do
-    assert_predicate bin/"bastionctl", :exist?
+    assert_path_exists bin/"bastionctl"
     assert_predicate bin/"bastionctl", :executable?
   end
 end
