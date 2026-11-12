@@ -7,23 +7,23 @@ class Bastionctl < Formula
 
   on_macos do
     on_arm do
-      url "https://github.com/ricardoleal/bastionctl/releases/download/v0.2.1/bastionctl-darwin-arm64"
-      sha256 "1161af2f599582ada47d694a8af505f7bb29d33f0901f05fd5ace76a55737b96"
+      url "https://github.com/ricardoleal/bastionctl/releases/download/v0.2.2/bastionctl-darwin-arm64"
+      sha256 "e089acc52dd1e6479afa1ca3af7ce456cc8a85ab7512d3eeec88c5d19d57d478"
     end
     on_intel do
-      url "https://github.com/ricardoleal/bastionctl/releases/download/v0.2.1/bastionctl-darwin-amd64"
-      sha256 "3cd94d3db41044cdcdb524ac9a387f49d97870907e5392e95e1380f980e71b45"
+      url "https://github.com/ricardoleal/bastionctl/releases/download/v0.2.2/bastionctl-darwin-amd64"
+      sha256 "00a15f785d8768190e459d18a85330c2835fac664f2bf42254ddc4f13bc3447f"
     end
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/ricardoleal/bastionctl/releases/download/v0.2.1/bastionctl-linux-arm64"
-      sha256 "15d7537a8be8089d1d092f8e5145f92fcd5b3e8b58dac86466a15eba7302b149"
+      url "https://github.com/ricardoleal/bastionctl/releases/download/v0.2.2/bastionctl-linux-arm64"
+      sha256 "0ef720416fedad0dca116b96e457f789aaf18c78d1b7c0405402b02f4d8a31e5"
     end
     on_intel do
-      url "https://github.com/ricardoleal/bastionctl/releases/download/v0.2.1/bastionctl-linux-amd64"
-      sha256 "97f187de37f342da1326285dd93f7fba0e3449d2e6901c9be950ef1a3a23e449"
+      url "https://github.com/ricardoleal/bastionctl/releases/download/v0.2.2/bastionctl-linux-amd64"
+      sha256 "79ead19f4d5139a086dfce07d7b6de1474c2dfe327ee045318d845bd7e347ef0"
     end
   end
 
